@@ -31,7 +31,7 @@ class TweetScraper(CrawlSpider):
     def start_requests(self):
         # generate request: https://twitter.com/search?q=[xxx] for each query
         for query in self.queries:
-            url = 'https://twitter.com/search?q=%s'%urllib.quote_plus(query)
+            url = 'https://twitter.com/search?q=%s'%urllib.parse.quote_plus(query)
             yield http.Request(url, callback=self.parse_search_page)
 
 
@@ -41,13 +41,13 @@ class TweetScraper(CrawlSpider):
             yield item
 
         # get next page
-        tmp = self.reScrollCursor.search(response.body)
+        tmp = self.reScrollCursor.search(response.body.decode('utf-8'))
         if tmp:
             query = urlparse.parse_qs(urlparse.urlparse(response.request.url).query)['q'][0]
             scroll_cursor = tmp.group(1)
             url = 'https://twitter.com/i/search/timeline?q=%s&' \
                   'include_available_features=1&include_entities=1&max_position=%s' % \
-                  (urllib.quote_plus(query), scroll_cursor)
+                  (urllib.parse.quote_plus(query), scroll_cursor)
             yield http.Request(url, callback=self.parse_more_page)
 
         # TODO: # get refresh page
@@ -69,7 +69,7 @@ class TweetScraper(CrawlSpider):
         min_position = data['min_position']
         url = 'https://twitter.com/i/search/timeline?q=%s&' \
               'include_available_features=1&include_entities=1&max_position=%s' % \
-               (urllib.quote_plus(query), min_position)
+               (urllib.parse.quote_plus(query), min_position)
         yield http.Request(url, callback=self.parse_more_page)
 
 

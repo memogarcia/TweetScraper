@@ -1,4 +1,5 @@
-from scrapy.linkextractors.sgml import SgmlLinkExtractor
+# from scrapy.linkextractors.sgml import SgmlLinkExtractor
+from scrapy.linkextractors import LinkExtractor as LinkExtractor
 from scrapy.spiders import CrawlSpider, Rule
 from scrapy.selector import Selector
 from scrapy.conf import settings
@@ -9,7 +10,8 @@ import json
 import time
 import logging
 import urllib
-import urlparse
+from urllib import parse as urlparse
+# import urlparse
 
 from TweetScraper.items import TweetItem, UserItem
 
